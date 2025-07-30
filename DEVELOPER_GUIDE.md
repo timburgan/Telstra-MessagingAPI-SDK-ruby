@@ -478,11 +478,11 @@ end
 
 ## Testing and Mocking
 
-### RSpec Test Examples
+### Minitest Test Examples
 
 #### Mock Webhook Payloads
 ```ruby
-# spec/support/webhook_helpers.rb
+# test/support/webhook_helpers.rb
 module WebhookHelpers
   def inbound_sms_payload(overrides = {})
     {
@@ -526,111 +526,106 @@ end
 
 #### Controller Tests
 ```ruby
-# spec/controllers/webhook_controller_spec.rb
-require 'rails_helper'
+# test/controllers/webhook_controller_test.rb
+require 'test_helper'
 
-RSpec.describe WebhookController, type: :controller do
+class WebhookControllerTest < ActionController::TestCase
   include WebhookHelpers
   
-  describe "POST #inbound_sms" do
-    it "processes valid SMS webhook" do
-      payload = inbound_sms_payload(body: "Hello World")
-      
-      post :inbound_sms, body: payload.to_json, 
-           headers: { 'CONTENT_TYPE' => 'application/json' }
-      
-      expect(response).to have_http_status(200)
-      expect(JSON.parse(response.body)['status']).to eq('received')
-      
-      # Verify message was stored
-      message = InboundMessage.last
-      expect(message.content).to eq("Hello World")
-      expect(message.sender).to eq("+61412345678")
-    end
+  def test_processes_valid_sms_webhook
+    payload = inbound_sms_payload(body: "Hello World")
     
-    it "returns error for missing required fields" do
-      payload = inbound_sms_payload.except(:body)
-      
-      post :inbound_sms, body: payload.to_json,
-           headers: { 'CONTENT_TYPE' => 'application/json' }
-      
-      expect(response).to have_http_status(400)
-      expect(JSON.parse(response.body)['error']).to include('Missing fields')
-    end
+    post :inbound_sms, body: payload.to_json, 
+         headers: { 'CONTENT_TYPE' => 'application/json' }
+    
+    assert_response :ok
+    assert_equal 'received', JSON.parse(response.body)['status']
+    
+    # Verify message was stored
+    message = InboundMessage.last
+    assert_equal "Hello World", message.content
+    assert_equal "+61412345678", message.sender
   end
   
-  describe "POST #inbound_mms" do
-    it "processes MMS with image content" do
-      image_payload = Base64.encode64("fake_image_data")
-      payload = inbound_mms_payload(
-        MMSContent: [
-          {
-            type: "image/jpeg",
-            filename: "test.jpg",
-            payload: image_payload
-          }
-        ]
-      )
-      
-      post :inbound_mms, body: payload.to_json,
-           headers: { 'CONTENT_TYPE' => 'application/json' }
-      
-      expect(response).to have_http_status(200)
-      
-      message = InboundMmsMessage.last
-      expect(message.content_items.first['type']).to eq('image')
-    end
+  def test_returns_error_for_missing_required_fields
+    payload = inbound_sms_payload.except(:body)
+    
+    post :inbound_sms, body: payload.to_json,
+         headers: { 'CONTENT_TYPE' => 'application/json' }
+    
+    assert_response :bad_request
+    assert_includes JSON.parse(response.body)['error'], 'Missing fields'
+  end
+  
+  def test_processes_mms_with_image_content
+    image_payload = Base64.encode64("fake_image_data")
+    payload = inbound_mms_payload(
+      MMSContent: [
+        {
+          type: "image/jpeg",
+          filename: "test.jpg",
+          payload: image_payload
+        }
+      ]
+    )
+    
+    post :inbound_mms, body: payload.to_json,
+         headers: { 'CONTENT_TYPE' => 'application/json' }
+    
+    assert_response :ok
+    
+    message = InboundMmsMessage.last
+    assert_equal 'image', message.content_items.first['type']
   end
 end
 ```
 
 #### Service Tests with API Mocking
 ```ruby
-# spec/services/sms_service_spec.rb
-require 'rails_helper'
+# test/services/sms_service_test.rb
+require 'test_helper'
 
-RSpec.describe SmsService do
-  let(:messaging_api) { instance_double(Telstra_Messaging::MessagingApi) }
-  let(:service) { described_class.new(messaging_api) }
-  
-  before do
-    allow(Telstra_Messaging::MessagingApi).to receive(:new).and_return(messaging_api)
+class SmsServiceTest < Minitest::Test
+  def setup
+    @messaging_api = Minitest::Mock.new
+    @service = SmsService.new(@messaging_api)
   end
   
-  describe "#send_notification" do
-    it "sends SMS successfully" do
-      message_response = double(
-        message_id: "MSG123",
-        status: "sent"
-      )
-      
-      expect(messaging_api).to receive(:send_sms) do |request|
-        expect(request.to).to eq("+61412345678")
-        expect(request.body).to eq("Your order is ready!")
-        message_response
-      end
-      
-      result = service.send_notification(
-        phone: "+61412345678",
-        message: "Your order is ready!"
-      )
-      
-      expect(result[:success]).to be true
-      expect(result[:message_id]).to eq("MSG123")
+  def test_send_notification_successfully
+    message_response = OpenStruct.new(
+      message_id: "MSG123",
+      status: "sent"
+    )
+    
+    @messaging_api.expect :send_sms do |request|
+      assert_equal "+61412345678", request.to
+      assert_equal "Your order is ready!", request.body
+      message_response
     end
     
-    it "handles API errors gracefully" do
-      api_error = Telstra_Messaging::ApiError.new("Invalid phone number")
-      allow(messaging_api).to receive(:send_sms).and_raise(api_error)
-      
-      result = service.send_notification(
-        phone: "invalid",
-        message: "Test"
-      )
-      
-      expect(result[:success]).to be false
-      expect(result[:error]).to include("Invalid phone number")
-    end
+    result = @service.send_notification(
+      phone: "+61412345678",
+      message: "Your order is ready!"
+    )
+    
+    assert result[:success]
+    assert_equal "MSG123", result[:message_id]
+    @messaging_api.verify
+  end
+  
+  def test_handles_api_errors_gracefully
+    api_error = Telstra_Messaging::ApiError.new("Invalid phone number")
+    
+    @messaging_api.expect :send_sms, -> { raise api_error }
+    
+    result = @service.send_notification(
+      phone: "invalid",
+      message: "Test"
+    )
+    
+    refute result[:success]
+    assert_includes result[:error], "Invalid phone number"
+    @messaging_api.verify
   end
 end
 ```
