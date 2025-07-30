@@ -213,6 +213,7 @@ For more detailed information, see the [Developer Guide](DEVELOPER_GUIDE.md).
 
 - 📖 [Developer Guide](DEVELOPER_GUIDE.md) - Comprehensive integration guide
 - 🔄 [Message Flows](MESSAGE_FLOWS.md) - Visual sequence diagrams 
+- 💻 [Code Examples](examples/) - Practical webhook and messaging examples
 - 🧪 [API Testing with Postman](https://app.getpostman.com/run-collection/ded00578f69a9deba256)
 
 ## API Reference
