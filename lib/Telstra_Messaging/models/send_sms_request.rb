@@ -152,7 +152,7 @@ module Telstra_Messaging
     end
 
     # Calculates hash code according to all attributes.
-    # @return [Fixnum] Hash code
+    # @return [Integer] Hash code
     def hash
       [to, body, from, validity, scheduled_delivery, notify_url, reply_request, priority].hash
     end

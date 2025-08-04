@@ -33,7 +33,7 @@ module Telstra_Messaging
     # Invoke the provisioning API to get a dedicated mobile number for an account or application. Note that Free Trial apps will have a 30-Day Limit for their provisioned number. If the Provisioning call is made several times within that 30-Day period, it will return the &#x60;expiryDate&#x60; in the Unix format and will not add any activeDays until after that &#x60;expiryDate&#x60;.  For paid apps, a provisioned number can be allotted for a maximum of 5 years. If a Provisioning call is made which will result to activeDays &gt; 1830, the response body will indicate that the provisioned number is already valid for more than 5 years. 
     # @param provision_number_request A JSON payload containing the required attributes
     # @param [Hash] opts the optional parameters
-    # @return [Array<(ProvisionNumberResponse, Fixnum, Hash)>] ProvisionNumberResponse data, response status code and response headers
+    # @return [Array<(ProvisionNumberResponse, Integer, Hash)>] ProvisionNumberResponse data, response status code and response headers
     def create_subscription_with_http_info(provision_number_request, opts = {})
       if @api_client.config.debugging
         @api_client.config.logger.debug 'Calling API: ProvisioningApi.create_subscription ...'
@@ -87,7 +87,7 @@ module Telstra_Messaging
     # Delete a mobile number subscription from an account 
     # @param delete_number_request EmptyArr
     # @param [Hash] opts the optional parameters
-    # @return [Array<(nil, Fixnum, Hash)>] nil, response status code and response headers
+    # @return [Array<(nil, Integer, Hash)>] nil, response status code and response headers
     def delete_subscription_with_http_info(delete_number_request, opts = {})
       if @api_client.config.debugging
         @api_client.config.logger.debug 'Calling API: ProvisioningApi.delete_subscription ...'
@@ -136,7 +136,7 @@ module Telstra_Messaging
     # Get Subscription
     # Get mobile number subscription for an account 
     # @param [Hash] opts the optional parameters
-    # @return [Array<(GetSubscriptionResponse, Fixnum, Hash)>] GetSubscriptionResponse data, response status code and response headers
+    # @return [Array<(GetSubscriptionResponse, Integer, Hash)>] GetSubscriptionResponse data, response status code and response headers
     def get_subscription_with_http_info(opts = {})
       if @api_client.config.debugging
         @api_client.config.logger.debug 'Calling API: ProvisioningApi.get_subscription ...'

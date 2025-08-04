@@ -123,7 +123,7 @@ module Telstra_Messaging
     end
 
     # Calculates hash code according to all attributes.
-    # @return [Fixnum] Hash code
+    # @return [Integer] Hash code
     def hash
       [status, destination_address, sender_address, message, message_id, sent_timestamp].hash
     end
