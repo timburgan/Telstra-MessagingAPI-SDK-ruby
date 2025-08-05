@@ -46,7 +46,8 @@ describe 'MessagingApi' do
 
   # unit tests for get_sms_status
   # Get SMS Status
-  # If no notification URL has been specified, it is possible to poll for the message status. Note that the &#x60;MessageId&#x60; that appears in the URL must be URL encoded. Just copying the &#x60;MessageId&#x60; as it was supplied when submitting the message may not work.  SMS Status with Notification URL --- When a message has reached its final state, the API will send a POST to the URL that has been previously specified. &lt;pre&gt;&lt;code class&#x3D;\&quot;language-sh\&quot;&gt;{     to: &#39;+61418123456&#39;     sentTimestamp: &#39;2017-03-17T10:05:22+10:00&#39;     receivedTimestamp: &#39;2017-03-17T10:05:23+10:00&#39;     messageId: /cccb284200035236000000000ee9d074019e0301/1261418123456     deliveryStatus: DELIVRD   } &lt;/code&gt;&lt;/pre&gt;  The fields are: &lt;table&gt;   &lt;thead&gt;     &lt;tr&gt;       &lt;th&gt;Field&lt;/th&gt;       &lt;th&gt;Description&lt;/th&gt;     &lt;/tr&gt;   &lt;/thead&gt;   &lt;tbody&gt;     &lt;tr&gt;       &lt;td&gt;&lt;code&gt;to&lt;/code&gt;&lt;/td&gt;       &lt;td&gt;The number the message was sent to.&lt;/td&gt;     &lt;/tr&gt;     &lt;tr&gt;       &lt;td&gt;&lt;code&gt;receivedTimestamp&lt;/code&gt;&lt;/td&gt;       &lt;td&gt;Time the message was sent to the API.&lt;/td&gt;     &lt;/tr&gt;     &lt;tr&gt;       &lt;td&gt;&lt;code&gt;sentTimestamp&lt;/code&gt;&lt;/td&gt;       &lt;td&gt;Time handling of the message ended.&lt;/td&gt;     &lt;/tr&gt;     &lt;tr&gt;       &lt;td&gt;&lt;code&gt;deliveryStatus&lt;/code&gt;&lt;/td&gt;       &lt;td&gt;The final state of the message.&lt;/td&gt;     &lt;/tr&gt;     &lt;tr&gt;       &lt;td&gt;&lt;code&gt;messageId&lt;/code&gt;&lt;/td&gt;       &lt;td&gt;The same reference that was returned when the original message was sent.&lt;/td&gt;     &lt;/tr&gt;     &lt;tr&gt;       &lt;td&gt;&lt;code&gt;receivedTimestamp&lt;/code&gt;&lt;/td&gt;       &lt;td&gt;Time the message was sent to the API.&lt;/td&gt;     &lt;/tr&gt;   &lt;/tbody&gt; &lt;/table&gt;  Upon receiving this call it is expected that your servers will give a 204 (No Content) response. Anything else will cause the API to reattempt the call 5 minutes later. 
+  # If no notification URL has been specified, it is possible to poll for the message status.
+  # Note that the MessageId that appears in the URL must be URL encoded. 
   # @param message_id Unique identifier of a message - it is the value returned from a previous POST call to https://api.telstra.com/v2/messages/sms. 
   # @param [Hash] opts the optional parameters
   # @return [Array<OutboundPollResponse>]
@@ -81,8 +82,8 @@ describe 'MessagingApi' do
   # unit tests for send_mms
   # Send MMS
   # Send MMS
-  # @param send_mms_request A JSON or XML payload containing the recipient&#39;s phone number and MMS message.
-The recipient number should be in the format &#39;04xxxxxxxx&#39; where x is a digit.
+  # @param send_mms_request A JSON or XML payload containing the recipient's phone number and MMS message.
+  # The recipient number should be in the format '04xxxxxxxx' where x is a digit.
 
   # @param [Hash] opts the optional parameters
   # @return [MessageSentResponse]
@@ -95,8 +96,8 @@ The recipient number should be in the format &#39;04xxxxxxxx&#39; where x is a d
   # unit tests for send_sms
   # Send SMS
   # Send an SMS Message to a single or multiple mobile number/s. 
-  # @param send_sms_request A JSON or XML payload containing the recipient&#39;s phone number and text message.
-This number can be in international format if preceeded by a +61 or in national format (&#39;04xxxxxxxx&#39;) where x is a digit.
+  # @param send_sms_request A JSON or XML payload containing the recipient's phone number and text message.
+  # This number can be in international format if preceeded by a +61 or in national format ('04xxxxxxxx') where x is a digit.
 
   # @param [Hash] opts the optional parameters
   # @return [MessageSentResponse]

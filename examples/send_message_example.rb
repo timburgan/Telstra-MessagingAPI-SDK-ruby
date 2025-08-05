@@ -126,92 +126,92 @@ class TelstraMessagingService
 
   private
 
-  def setup_authentication
-    client_id = ENV['TELSTRA_CLIENT_ID']
-    client_secret = ENV['TELSTRA_CLIENT_SECRET']
-    
-    unless client_id && client_secret
-      raise "Please set TELSTRA_CLIENT_ID and TELSTRA_CLIENT_SECRET environment variables"
-    end
-
-    @logger.info "Authenticating with Telstra API..."
-    
-    # Get access token
-    result = @auth_api.auth_token(client_id, client_secret, 'client_credentials')
-    access_token = result.access_token
-    
-    # Configure the SDK
-    Telstra_Messaging.configure do |config|
-      config.access_token = access_token
-    end
-    
-    @logger.info "Authentication successful"
-  end
-
-  def send_with_retry(retries = 0, &block)
-    block.call
-  rescue Telstra_Messaging::ApiError => e
-    if retries < MAX_RETRIES && retryable_error?(e)
-      @logger.warn "API error (attempt #{retries + 1}/#{MAX_RETRIES}): #{e.message}"
-      sleep(RETRY_DELAY * (2 ** retries)) # Exponential backoff
-      send_with_retry(retries + 1, &block)
-    else
-      handle_api_error(e)
-      raise e
-    end
-  end
-
-  def retryable_error?(error)
-    # Retry on server errors and rate limits
-    [429, 500, 502, 503, 504].include?(error.code)
-  end
-
-  def handle_api_error(error)
-    case error.code
-    when 400
-      # Parse error details
-      begin
-        error_body = JSON.parse(error.response_body)
-        @logger.error "Validation error: #{error_body['message']}"
-        @logger.error "Error code: #{error_body['code']}"
-      rescue JSON::ParserError
-        @logger.error "Bad request: #{error.message}"
+    def setup_authentication
+      client_id = ENV['TELSTRA_CLIENT_ID']
+      client_secret = ENV['TELSTRA_CLIENT_SECRET']
+      
+      unless client_id && client_secret
+        raise "Please set TELSTRA_CLIENT_ID and TELSTRA_CLIENT_SECRET environment variables"
       end
-    when 401
-      @logger.error "Authentication failed: #{error.message}"
-    when 403
-      @logger.error "Access forbidden: #{error.message}"
-    when 429
-      @logger.error "Rate limit exceeded: #{error.message}"
-    else
-      @logger.error "API error #{error.code}: #{error.message}"
-    end
-  end
 
-  def get_content_type(file_path)
-    case File.extname(file_path).downcase
-    when '.jpg', '.jpeg'
-      'image/jpeg'
-    when '.png'
-      'image/png'
-    when '.gif'
-      'image/gif'
-    when '.bmp'
-      'image/bmp'
-    when '.mp4'
-      'video/mp4'
-    when '.3gp'
-      'video/3gp'
-    when '.wav'
-      'audio/wav'
-    when '.mp3'
-      'audio/mp3'
-    when '.amr'
-      'audio/amr'
-    else
-      'application/octet-stream'
+      @logger.info "Authenticating with Telstra API..."
+      
+      # Get access token
+      result = @auth_api.auth_token(client_id, client_secret, 'client_credentials')
+      access_token = result.access_token
+      
+      # Configure the SDK
+      Telstra_Messaging.configure do |config|
+        config.access_token = access_token
+      end
+      
+      @logger.info "Authentication successful"
     end
-  end
+
+    def send_with_retry(retries = 0, &block)
+      block.call
+    rescue Telstra_Messaging::ApiError => e
+      if retries < MAX_RETRIES && retryable_error?(e)
+        @logger.warn "API error (attempt #{retries + 1}/#{MAX_RETRIES}): #{e.message}"
+        sleep(RETRY_DELAY * (2**retries)) # Exponential backoff
+        send_with_retry(retries + 1, &block)
+      else
+        handle_api_error(e)
+        raise e
+      end
+    end
+
+    def retryable_error?(error)
+      # Retry on server errors and rate limits
+      [429, 500, 502, 503, 504].include?(error.code)
+    end
+
+    def handle_api_error(error)
+      case error.code
+      when 400
+        # Parse error details
+        begin
+          error_body = JSON.parse(error.response_body)
+          @logger.error "Validation error: #{error_body['message']}"
+          @logger.error "Error code: #{error_body['code']}"
+        rescue JSON::ParserError
+          @logger.error "Bad request: #{error.message}"
+        end
+      when 401
+        @logger.error "Authentication failed: #{error.message}"
+      when 403
+        @logger.error "Access forbidden: #{error.message}"
+      when 429
+        @logger.error "Rate limit exceeded: #{error.message}"
+      else
+        @logger.error "API error #{error.code}: #{error.message}"
+      end
+    end
+
+    def get_content_type(file_path)
+      case File.extname(file_path).downcase
+      when '.jpg', '.jpeg'
+        'image/jpeg'
+      when '.png'
+        'image/png'
+      when '.gif'
+        'image/gif'
+      when '.bmp'
+        'image/bmp'
+      when '.mp4'
+        'video/mp4'
+      when '.3gp'
+        'video/3gp'
+      when '.wav'
+        'audio/wav'
+      when '.mp3'
+        'audio/mp3'
+      when '.amr'
+        'audio/amr'
+      else
+        'application/octet-stream'
+      end
+    end
 end
 
 # Example usage and testing

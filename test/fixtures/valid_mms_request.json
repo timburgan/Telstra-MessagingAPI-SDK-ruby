@@ -1,0 +1,11 @@
+{
+  "to": "+61412345678",
+  "subject": "Test MMS",
+  "MMSContent": [
+    {
+      "type": "text/plain",
+      "filename": "text.txt",
+      "payload": "VGVzdCBNTVMgY29udGVudA=="
+    }
+  ]
+}

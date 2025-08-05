@@ -1,0 +1,7 @@
+{
+  "messageId": "test_message_12345",
+  "status": "DELIVRD",
+  "to": "+61412345678",
+  "sentTimestamp": "2024-01-15T10:00:00+10:00",
+  "receivedTimestamp": "2024-01-15T10:00:01+10:00"
+}
