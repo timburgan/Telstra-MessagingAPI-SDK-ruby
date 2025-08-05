@@ -1,4 +1,5 @@
 require "bundler/gem_tasks"
+require 'rake/testtask'
 
 begin
   require 'minitest/test_task'
@@ -11,3 +12,5 @@ begin
 rescue LoadError
   # no minitest available
 end
+
+task default: [:test]
