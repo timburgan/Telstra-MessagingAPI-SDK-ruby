@@ -1,17 +1,10 @@
 require "bundler/gem_tasks"
+require 'rake/testtask'
 
-begin
-  require 'rspec/core/rake_task'
-  RSpec::Core::RakeTask.new(:spec)
-rescue LoadError
-  # no rspec available
-end
-
-desc "Run minitest tests"
-task :test do
-  require 'minitest'
-  test_files = Dir['test/**/*_test.rb']
-  test_files.each { |file| load file }
+Rake::TestTask.new(:test) do |t|
+  t.libs << "test"
+  t.test_files = FileList['test/**/*_test.rb']
+  t.verbose = true
 end
 
 begin
@@ -23,4 +16,4 @@ rescue LoadError
   # no rubocop available
 end
 
-task default: [:spec, :test]
+task default: [:test]
