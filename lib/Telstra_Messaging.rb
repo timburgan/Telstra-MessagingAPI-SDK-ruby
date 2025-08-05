@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 =begin
 #Telstra Messaging API
 
@@ -11,6 +13,7 @@ OpenAPI Generator version: 3.2.0
 =end
 
 # Common files
+require 'Telstra_Messaging/http_client_utilities'
 require 'Telstra_Messaging/api_client'
 require 'Telstra_Messaging/api_error'
 require 'Telstra_Messaging/version'
