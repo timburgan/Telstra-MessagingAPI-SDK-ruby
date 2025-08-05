@@ -45,8 +45,15 @@ puts "Message sent! ID: #{result.message_id}"
 ## 📖 Documentation
 
 - **[Developer Guide](DEVELOPER_GUIDE.md)** - Comprehensive integration guide with webhook payloads, examples, and testing
-- **[Message Flows](MESSAGE_FLOWS.md)** - Visual sequence diagrams showing API interaction patterns
 - **[API Reference](docs/)** - Detailed API documentation for all classes and methods
+- **[Examples](examples/)** - Complete code examples for sending messages and handling webhooks
+
+### Message Flow Overview
+
+The Telstra Messaging API follows these basic flows:
+
+**Sending Messages:** App → Authentication → Send Message → Delivery → Optional Webhook
+**Receiving Messages:** Device → Telstra Network → Webhook → Your App → Process & Reply
 
 ## Requirements
 
