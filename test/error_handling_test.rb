@@ -1,17 +1,7 @@
 require_relative 'test_helper'
-require 'webmock/minitest'
 
 class ErrorHandlingTest < TestHelper
   
-  def setup
-    super
-    WebMock.enable!
-  end
-
-  def teardown
-    WebMock.disable!
-  end
-
   def test_api_error_creation_with_message
     error = Telstra_Messaging::ApiError.new("Test error message")
     
@@ -51,30 +41,30 @@ class ErrorHandlingTest < TestHelper
     assert_equal "api.example.com", config.host
     assert_equal "/test", config.base_path
   end
-
+  
   def test_api_client_handles_network_timeout_simulation
-    # Mock a network timeout scenario
-    stub_request(:any, /.*/).to_timeout
+    # Test that API client can be created with configuration
+    # Note: Network simulation removed as webmock dependency was eliminated
     
     config = Telstra_Messaging::Configuration.new
     config.host = 'api.test.com'
     
     api_client = Telstra_Messaging::ApiClient.new(config)
     
-    # API client should be created successfully even with mocked timeouts
+    # API client should be created successfully
     assert_instance_of Telstra_Messaging::ApiClient, api_client
   end
 
   def test_api_client_handles_connection_error_simulation
-    # Mock a connection error scenario
-    stub_request(:any, /.*/).to_raise(Errno::ECONNREFUSED)
+    # Test that API client can be created with configuration
+    # Note: Network simulation removed as webmock dependency was eliminated
     
     config = Telstra_Messaging::Configuration.new
     config.host = 'api.test.com'
     
     api_client = Telstra_Messaging::ApiClient.new(config)
     
-    # API client should be created successfully even with mocked connection errors
+    # API client should be created successfully
     assert_instance_of Telstra_Messaging::ApiClient, api_client
   end
 

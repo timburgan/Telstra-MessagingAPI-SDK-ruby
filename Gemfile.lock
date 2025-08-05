@@ -8,21 +8,7 @@ PATH
 GEM
   remote: https://rubygems.org/
   specs:
-    ZenTest (4.12.2)
-    addressable (2.8.7)
-      public_suffix (>= 2.0.2, < 7.0)
     ast (2.4.3)
-    autotest (4.4.6)
-      ZenTest (>= 4.4.1)
-    autotest-fsevent (0.3.0)
-      sys-uname
-    autotest-growl (0.2.16)
-    autotest-rails-pure (4.1.2)
-    bigdecimal (3.2.2)
-    crack (1.0.0)
-      bigdecimal
-      rexml
-    diff-lcs (1.6.2)
     ethon (0.16.0)
       ffi (>= 1.15.0)
     ffi (1.17.2)
@@ -36,7 +22,6 @@ GEM
     ffi (1.17.2-x86_64-darwin)
     ffi (1.17.2-x86_64-linux-gnu)
     ffi (1.17.2-x86_64-linux-musl)
-    hashdiff (1.2.0)
     json (2.13.2)
     language_server-protocol (3.17.0.5)
     lint_roller (1.1.0)
@@ -46,25 +31,10 @@ GEM
       ast (~> 2.4.1)
       racc
     prism (1.4.0)
-    public_suffix (6.0.2)
     racc (1.8.1)
     rainbow (3.1.1)
     rake (12.0.0)
     regexp_parser (2.11.0)
-    rexml (3.4.1)
-    rspec (3.13.1)
-      rspec-core (~> 3.13.0)
-      rspec-expectations (~> 3.13.0)
-      rspec-mocks (~> 3.13.0)
-    rspec-core (3.13.5)
-      rspec-support (~> 3.13.0)
-    rspec-expectations (3.13.5)
-      diff-lcs (>= 1.2.0, < 2.0)
-      rspec-support (~> 3.13.0)
-    rspec-mocks (3.13.5)
-      diff-lcs (>= 1.2.0, < 2.0)
-      rspec-support (~> 3.13.0)
-    rspec-support (3.13.4)
     rubocop (1.79.1)
       json (~> 2.3)
       language_server-protocol (~> 3.17.0.2)
@@ -84,18 +54,11 @@ GEM
       rubocop (>= 1.75.0, < 2.0)
       rubocop-ast (>= 1.38.0, < 2.0)
     ruby-progressbar (1.13.0)
-    sys-uname (1.3.1)
-      ffi (~> 1.1)
     typhoeus (1.4.1)
       ethon (>= 0.9.0)
     unicode-display_width (3.1.4)
       unicode-emoji (~> 4.0, >= 4.0.4)
     unicode-emoji (4.0.4)
-    vcr (3.0.3)
-    webmock (1.24.6)
-      addressable (>= 2.3.6)
-      crack (>= 0.3.2)
-      hashdiff
 
 PLATFORMS
   aarch64-linux-gnu
@@ -112,17 +75,10 @@ PLATFORMS
 
 DEPENDENCIES
   Telstra_Messaging!
-  autotest (~> 4.4, >= 4.4.6)
-  autotest-fsevent (~> 0.2, >= 0.2.12)
-  autotest-growl (~> 0.2, >= 0.2.16)
-  autotest-rails-pure (~> 4.1, >= 4.1.2)
   minitest (~> 5.0)
   rake (~> 12.0.0)
-  rspec (~> 3.6, >= 3.6.0)
   rubocop (~> 1.0)
   rubocop-minitest (~> 0.35)
-  vcr (~> 3.0, >= 3.0.1)
-  webmock (~> 1.24, >= 1.24.3)
 
 BUNDLED WITH
    2.7.1
