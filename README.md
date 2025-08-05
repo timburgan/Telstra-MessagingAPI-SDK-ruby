@@ -3,7 +3,7 @@
 > **⚠️ Important Notice**
 > 
 > - **Ruby 3.3+ Required** - This gem requires Ruby version 3.3 or higher
-> - **Unofficial Gem** - This is an unofficial gem, forked from the now unsupported official gem that was at github.com/telstra/MessagingAPI-SDK-ruby but removed somewhere in July 2025.
+> - **Unofficial Gem** - This is an unofficial gem, forked originally from the now unsupported official gem (it seems) that was at [Telstra/MessagingAPI-SDK-Ruby](https://github.com/Telstra/MessagingAPI-SDK-Ruby) but removed somewtime around July 2025.
 >     - The functionailiy here is unchanged, though I've removed support for Ruby 3.2 and below, and added a docs/ folder, including sequence diagrams and examples, and just improved documentation for usage overall.
 
 An unofficial Ruby gem for integrating with the Telstra Messaging API. Send and receive SMS and MMS messages globally using Telstra's enterprise-grade messaging platform.
@@ -255,11 +255,6 @@ All URIs are relative to *https://tapi.telstra.com/v2*
 - [Telstra_Messaging::ProvisionNumberResponse](docs/ProvisionNumberResponse.md)
 - [Complete Model List](docs/)
 
-## Version Information
-
-- API version: 2.2.9
-- Package version: 1.0.6
-
 ## Authentication
 
 This SDK uses OAuth2 with client credentials flow:
@@ -268,13 +263,3 @@ This SDK uses OAuth2 with client credentials flow:
 - **Flow**: application
 - **Scopes**: NSMS
 
-## License
-
-See the LICENSE file for details.
-
-## Support
-
-For technical support and questions:
-- [Developer Portal](https://dev.telstra.com)
-- [API Documentation](https://dev.telstra.com/content/messaging-api-v2)
-- [GitHub Issues](https://github.com/Telstra/MessagingAPI-SDK-Ruby/issues)
