@@ -34,12 +34,12 @@ Gem::Specification.new do |s|
   spec.add_runtime_dependency "json", "~> 2.7"
 
   # Development dependencies - current versions for Ruby 3.3+
-  spec.add_development_dependency "rspec", "~> 3.12"
+  spec.add_development_dependency "minitest", "~> 5.25"
   spec.add_development_dependency "vcr", "~> 6.1"
   spec.add_development_dependency "webmock", "~> 3.18"
 
   s.files         = `find *`.split("\n").uniq.sort.select { |f| !f.empty? }
-  s.test_files    = `find spec/*`.split("\n")
+  s.test_files    = `find test/*`.split("\n")
   s.executables   = []
   s.require_paths = ["lib"]
 end

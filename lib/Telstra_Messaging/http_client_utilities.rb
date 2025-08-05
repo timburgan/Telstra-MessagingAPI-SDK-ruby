@@ -3,6 +3,67 @@
 module Telstra_Messaging
   # HTTP client utilities extracted from ApiClient for better maintainability
   module HttpClientUtilities
+    # Check if the given MIME is a JSON MIME.
+    # JSON MIME examples:
+    #   application/json
+    #   application/json; charset=UTF8
+    #   APPLICATION/JSON
+    #   application/vnd.company+json
+    # @param [String] mime MIME
+    # @return [Boolean] True if the MIME is application/json
+    def json_mime?(mime)
+      (mime =~ /\Aapplication\/json/i) != nil
+    end
+
+    # Select Accept header.
+    # @param [Array] accepts array for Accept
+    # @return [String] the Accept header (e.g. application/json)
+    def select_header_accept(accepts)
+      return nil if accepts.nil? || accepts.empty?
+
+      # use JSON when present, otherwise use the first one
+      json_accept = accepts.find { |s| json_mime?(s) }
+      json_accept || accepts.join(',')
+    end
+
+    # Select Content-Type header.
+    # @param [Array] content_types array for Content-Type
+    # @return [String] the Content-Type header  (e.g. application/json)
+    def select_header_content_type(content_types)
+      # use JSON when present, otherwise use the first one
+      return 'application/json' if content_types.nil? || content_types.empty?
+
+      json_content_type = content_types.find { |s| json_mime?(s) }
+      json_content_type || content_types.first
+    end
+
+    # Build parameter value according to the given collection format.
+    # @param [String] collection_format one of :csv, :ssv, :tsv, :pipes and :multi
+    def build_collection_param(param, collection_format)
+      case collection_format
+      when :csv
+        param.join(',')
+      when :ssv
+        param.join(' ')
+      when :tsv
+        param.join("\t")
+      when :pipes
+        param.join('|')
+      when :multi
+        # return the array directly as typhoeus will handle it as expected
+        param
+      else
+        fail "unknown collection format: #{collection_format.inspect}"
+      end
+    end
+
+    # Sanitize filename by removing path.
+    # e.g. ../../sun.gif becomes sun.gif
+    #
+    # @param [String] filename the filename to be sanitized
+    # @return [String] the sanitized filename
+    def sanitize_filename(filename) = filename.gsub(%r{.*[/\\]}, '')
+
     private
 
     # Save response body into a file in (the defined) temporary folder, using the filename
@@ -41,13 +102,6 @@ module Telstra_Messaging
       end
     end
 
-    # Sanitize filename by removing path.
-    # e.g. ../../sun.gif becomes sun.gif
-    #
-    # @param [String] filename the filename to be sanitized
-    # @return [String] the sanitized filename
-    def sanitize_filename(filename) = filename.gsub(%r{.*[/\\]}, '')
-
     def build_request_url(path)
       # Add leading and trailing slashes to path
       path = "/#{path}".gsub(%r{/+}, '/')
@@ -80,26 +134,6 @@ module Telstra_Messaging
         data = nil
       end
       data
-    end
-
-    # Build parameter value according to the given collection format.
-    # @param [String] collection_format one of :csv, :ssv, :tsv, :pipes and :multi
-    def build_collection_param(param, collection_format)
-      case collection_format
-      when :csv
-        param.join(',')
-      when :ssv
-        param.join(' ')
-      when :tsv
-        param.join("\t")
-      when :pipes
-        param.join('|')
-      when :multi
-        # return the array directly as typhoeus will handle it as expected
-        param
-      else
-        fail "unknown collection format: #{collection_format.inspect}"
-      end
     end
   end
 end

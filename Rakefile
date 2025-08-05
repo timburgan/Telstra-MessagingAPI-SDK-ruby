@@ -1,10 +1,13 @@
 require "bundler/gem_tasks"
 
 begin
-  require 'rspec/core/rake_task'
+  require 'minitest/test_task'
 
-  RSpec::Core::RakeTask.new(:spec)
-  task default: :spec
+  Minitest::TestTask.create(:test) do |t|
+    t.test_globs = ["test/**/*_test.rb"]
+  end
+  
+  task default: :test
 rescue LoadError
-  # no rspec available
+  # no minitest available
 end
