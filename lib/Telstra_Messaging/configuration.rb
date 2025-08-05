@@ -132,7 +132,7 @@ module Telstra_Messaging
     def initialize
       @scheme = 'https'
       @host = 'tapi.telstra.com'
-      @base_path = '/v2'
+      @base_path = '/v3'
       @api_key = {}
       @api_key_prefix = {}
       @timeout = 0
