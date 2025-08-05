@@ -106,71 +106,71 @@ class TelstraMessagingService
 
   private
 
-  def setup_authentication
-    client_id = ENV['TELSTRA_CLIENT_ID']
-    client_secret = ENV['TELSTRA_CLIENT_SECRET']
-    
-    unless client_id && client_secret
-      raise "Please set TELSTRA_CLIENT_ID and TELSTRA_CLIENT_SECRET environment variables"
+    def setup_authentication
+      client_id = ENV['TELSTRA_CLIENT_ID']
+      client_secret = ENV['TELSTRA_CLIENT_SECRET']
+      
+      unless client_id && client_secret
+        raise "Please set TELSTRA_CLIENT_ID and TELSTRA_CLIENT_SECRET environment variables"
+      end
+
+      @logger.info "Authenticating with Telstra API..."
+      
+      # Get access token
+      result = @auth_api.auth_token(client_id, client_secret, 'client_credentials')
+      access_token = result.access_token
+      
+      # Configure the SDK
+      Telstra_Messaging.configure do |config|
+        config.access_token = access_token
+      end
+      
+      @logger.info "Authentication successful"
     end
 
-    @logger.info "Authenticating with Telstra API..."
-    
-    # Get access token
-    result = @auth_api.auth_token(client_id, client_secret, 'client_credentials')
-    access_token = result.access_token
-    
-    # Configure the SDK
-    Telstra_Messaging.configure do |config|
-      config.access_token = access_token
+    def send_with_retry(retries = 0, &block)
+      block.call
+    rescue Telstra_Messaging::ApiError => e
+      if retries < MAX_RETRIES && retryable_error?(e)
+        @logger.warn "API error (attempt #{retries + 1}/#{MAX_RETRIES}): #{e.message}"
+        sleep(RETRY_DELAY * (2**retries)) # Exponential backoff
+        send_with_retry(retries + 1, &block)
+      else
+        handle_api_error(e)
+        raise e
+      end
     end
-    
-    @logger.info "Authentication successful"
-  end
 
-  def send_with_retry(retries = 0, &block)
-    block.call
-  rescue Telstra_Messaging::ApiError => e
-    if retries < MAX_RETRIES && retryable_error?(e)
-      @logger.warn "API error (attempt #{retries + 1}/#{MAX_RETRIES}): #{e.message}"
-      sleep(RETRY_DELAY * (2**retries)) # Exponential backoff
-      send_with_retry(retries + 1, &block)
-    else
-      handle_api_error(e)
-      raise e
+    def retryable_error?(error)
+      # Retry on server errors and rate limits
+      [429, 500, 502, 503, 504].include?(error.code)
     end
-  end
 
-  def retryable_error?(error)
-    # Retry on server errors and rate limits
-    [429, 500, 502, 503, 504].include?(error.code)
-  end
-
-  def handle_api_error(error)
-    case error.code
-    when 400
-      @logger.error "Validation error: #{error.message}"
-    when 401
-      @logger.error "Authentication failed: #{error.message}"
-    when 403
-      @logger.error "Access forbidden: #{error.message}"
-    when 429
-      @logger.error "Rate limit exceeded: #{error.message}"
-    else
-      @logger.error "API error #{error.code}: #{error.message}"
+    def handle_api_error(error)
+      case error.code
+      when 400
+        @logger.error "Validation error: #{error.message}"
+      when 401
+        @logger.error "Authentication failed: #{error.message}"
+      when 403
+        @logger.error "Access forbidden: #{error.message}"
+      when 429
+        @logger.error "Rate limit exceeded: #{error.message}"
+      else
+        @logger.error "API error #{error.code}: #{error.message}"
+      end
     end
-  end
 
-  def get_content_type(file_path)
-    case File.extname(file_path).downcase
-    when '.jpg', '.jpeg' then 'image/jpeg'
-    when '.png' then 'image/png'
-    when '.gif' then 'image/gif'
-    when '.mp4' then 'video/mp4'
-    when '.wav' then 'audio/wav'
-    else 'application/octet-stream'
+    def get_content_type(file_path)
+      case File.extname(file_path).downcase
+      when '.jpg', '.jpeg' then 'image/jpeg'
+      when '.png' then 'image/png'
+      when '.gif' then 'image/gif'
+      when '.mp4' then 'video/mp4'
+      when '.wav' then 'audio/wav'
+      else 'application/octet-stream'
+      end
     end
-  end
 end
 
 # === WEBHOOK HANDLING EXAMPLES ===
@@ -214,103 +214,103 @@ class TelstraWebhookHandler
 
   private
 
-  # Determine webhook type based on payload structure
-  def determine_webhook_type(payload, headers)
-    if payload.key?('deliveryStatus')
-      :delivery_status
-    elsif payload.key?('MMSContent')
-      :inbound_mms  
-    elsif payload.key?('body') && payload.key?('from')
-      :inbound_sms
-    else
-      :unknown
-    end
-  end
-
-  # Handle inbound SMS messages
-  def handle_inbound_sms(payload)
-    # Check for duplicate processing (idempotency)
-    message_id = payload['messageId']
-    if @processed_messages.include?(message_id)
-      @logger.info "Duplicate SMS webhook ignored: #{message_id}"
-      return
-    end
-    @processed_messages.add(message_id)
-
-    # Extract message details
-    from = payload['from']
-    to = payload['to']
-    body = payload['body']
-    sent_at = Time.parse(payload['sentTimestamp'])
-
-    @logger.info "Received SMS from #{from} to #{to}: #{body}"
-
-    # Example: Auto-reply logic
-    if body.downcase.include?('help')
-      auto_reply = "Thanks for your message! For support, visit our website."
-      @logger.info "Would send auto-reply to #{from}: #{auto_reply}"
-    end
-  end
-
-  # Handle inbound MMS messages
-  def handle_inbound_mms(payload)
-    from = payload['senderAddress']
-    to = payload['destinationAddress'] 
-    subject = payload['subject'] || ''
-    
-    @logger.info "Received MMS from #{from} to #{to}, subject: #{subject}"
-
-    # Process MMS content
-    content_items = payload['MMSContent'] || []
-    content_items.each do |content|
-      process_mms_content(content)
-    end
-  end
-
-  # Handle delivery status notifications
-  def handle_delivery_status(payload)
-    message_id = payload['messageId']
-    status = payload['deliveryStatus']
-    
-    @logger.info "Delivery status for #{message_id}: #{status}"
-    
-    case status
-    when 'DELIVRD'
-      @logger.info "Message delivered successfully"
-    when 'EXPIRED'
-      @logger.warn "Message expired before delivery"
-    when 'UNDELIV'
-      @logger.error "Message could not be delivered"
-    when 'REJECTD'
-      @logger.error "Message was rejected"
-    end
-  end
-
-  # Process MMS content (decode base64, determine type)
-  def process_mms_content(content)
-    content_type = content['type']
-    filename = content['filename']
-    payload_data = content['payload']
-
-    begin
-      decoded_content = Base64.decode64(payload_data)
-      
-      case content_type
-      when /^image\//
-        @logger.info "Received image: #{filename} (#{decoded_content.size} bytes)"
-      when /^video\//
-        @logger.info "Received video: #{filename} (#{decoded_content.size} bytes)"
-      when 'text/plain'
-        text_content = decoded_content.force_encoding('UTF-8')
-        @logger.info "Text content: #{text_content}"
+    # Determine webhook type based on payload structure
+    def determine_webhook_type(payload, headers)
+      if payload.key?('deliveryStatus')
+        :delivery_status
+      elsif payload.key?('MMSContent')
+        :inbound_mms  
+      elsif payload.key?('body') && payload.key?('from')
+        :inbound_sms
       else
-        @logger.info "Unknown content type: #{content_type}"
+        :unknown
       end
-      
-    rescue => e
-      @logger.error "Error processing MMS content: #{e.message}"
     end
-  end
+
+    # Handle inbound SMS messages
+    def handle_inbound_sms(payload)
+      # Check for duplicate processing (idempotency)
+      message_id = payload['messageId']
+      if @processed_messages.include?(message_id)
+        @logger.info "Duplicate SMS webhook ignored: #{message_id}"
+        return
+      end
+      @processed_messages.add(message_id)
+
+      # Extract message details
+      from = payload['from']
+      to = payload['to']
+      body = payload['body']
+      sent_at = Time.parse(payload['sentTimestamp'])
+
+      @logger.info "Received SMS from #{from} to #{to}: #{body}"
+
+      # Example: Auto-reply logic
+      if body.downcase.include?('help')
+        auto_reply = "Thanks for your message! For support, visit our website."
+        @logger.info "Would send auto-reply to #{from}: #{auto_reply}"
+      end
+    end
+
+    # Handle inbound MMS messages
+    def handle_inbound_mms(payload)
+      from = payload['senderAddress']
+      to = payload['destinationAddress'] 
+      subject = payload['subject'] || ''
+      
+      @logger.info "Received MMS from #{from} to #{to}, subject: #{subject}"
+
+      # Process MMS content
+      content_items = payload['MMSContent'] || []
+      content_items.each do |content|
+        process_mms_content(content)
+      end
+    end
+
+    # Handle delivery status notifications
+    def handle_delivery_status(payload)
+      message_id = payload['messageId']
+      status = payload['deliveryStatus']
+      
+      @logger.info "Delivery status for #{message_id}: #{status}"
+      
+      case status
+      when 'DELIVRD'
+        @logger.info "Message delivered successfully"
+      when 'EXPIRED'
+        @logger.warn "Message expired before delivery"
+      when 'UNDELIV'
+        @logger.error "Message could not be delivered"
+      when 'REJECTD'
+        @logger.error "Message was rejected"
+      end
+    end
+
+    # Process MMS content (decode base64, determine type)
+    def process_mms_content(content)
+      content_type = content['type']
+      filename = content['filename']
+      payload_data = content['payload']
+
+      begin
+        decoded_content = Base64.decode64(payload_data)
+        
+        case content_type
+        when /^image\//
+          @logger.info "Received image: #{filename} (#{decoded_content.size} bytes)"
+        when /^video\//
+          @logger.info "Received video: #{filename} (#{decoded_content.size} bytes)"
+        when 'text/plain'
+          text_content = decoded_content.force_encoding('UTF-8')
+          @logger.info "Text content: #{text_content}"
+        else
+          @logger.info "Unknown content type: #{content_type}"
+        end
+        
+      rescue => e
+        @logger.error "Error processing MMS content: #{e.message}"
+      end
+    end
 end
 
 # === EXAMPLE RUNNER ===
@@ -430,7 +430,7 @@ if __FILE__ == $0
   else
     puts "Running all examples...\n"
     run_webhook_examples
-    puts "\n" + "="*50 + "\n"
+    puts "\n" + "=" * 50 + "\n"
     run_sending_examples if ENV['TELSTRA_CLIENT_ID'] && ENV['TELSTRA_CLIENT_SECRET']
   end
 end
