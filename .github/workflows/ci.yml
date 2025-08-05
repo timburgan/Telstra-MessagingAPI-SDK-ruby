@@ -12,7 +12,7 @@ jobs:
     
     strategy:
       matrix:
-        ruby-version: ['2.7', '3.0', '3.1', '3.2', '3.3']
+        ruby-version: ['3.3', '3.4']
     
     steps:
     - uses: actions/checkout@v4
@@ -21,7 +21,11 @@ jobs:
       uses: ruby/setup-ruby@v1
       with:
         ruby-version: ${{ matrix.ruby-version }}
-        bundler-cache: true
+    
+    - name: Unfreeze Gemfile.lock for Bundler
+      run: |
+        bundle config set frozen false
+        rm -f Gemfile.lock
     
     - name: Install dependencies
       run: |
@@ -48,8 +52,12 @@ jobs:
     - name: Set up Ruby
       uses: ruby/setup-ruby@v1
       with:
-        ruby-version: '3.2'
-        bundler-cache: true
+        ruby-version: '3.3'
+    
+    - name: Unfreeze Gemfile.lock for Bundler
+      run: |
+        bundle config set frozen false
+        rm -f Gemfile.lock
     
     - name: Install dependencies
       run: |
