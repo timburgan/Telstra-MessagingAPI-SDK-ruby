@@ -45,7 +45,6 @@ puts "Message sent! ID: #{result.message_id}"
 ## 📖 Documentation
 
 - **[Developer Guide](DEVELOPER_GUIDE.md)** - Comprehensive integration guide with webhook payloads, examples, and testing
-- **[API Reference](docs/)** - Detailed API documentation for all classes and methods
 - **[Examples](examples/)** - Complete code examples for sending messages and handling webhooks
 
 ### Message Flow Overview
@@ -227,34 +226,30 @@ For more detailed information, see the [Developer Guide](DEVELOPER_GUIDE.md).
 - 💻 [Code Examples](examples/) - Practical webhook and messaging examples
 - 🧪 [API Testing with Postman](https://app.getpostman.com/run-collection/ded00578f69a9deba256)
 
-## API Reference
+## API Overview
 
-All URIs are relative to *https://tapi.telstra.com/v2*
+The SDK provides three main API classes:
 
-| Class | Method | HTTP request | Description |
-|-------|--------|--------------|-------------|
-| *Telstra_Messaging::AuthenticationApi* | [**auth_token**](docs/AuthenticationApi.md#auth_token) | **POST** /oauth/token | Generate OAuth2 token |
-| *Telstra_Messaging::MessagingApi* | [**send_sms**](docs/MessagingApi.md#send_sms) | **POST** /messages/sms | Send SMS |
-| *Telstra_Messaging::MessagingApi* | [**send_mms**](docs/MessagingApi.md#send_mms) | **POST** /messages/mms | Send MMS |
-| *Telstra_Messaging::MessagingApi* | [**get_sms_status**](docs/MessagingApi.md#get_sms_status) | **GET** /messages/sms/{messageId}/status | Get SMS Status |
-| *Telstra_Messaging::MessagingApi* | [**get_mms_status**](docs/MessagingApi.md#get_mms_status) | **GET** /messages/mms/{messageid}/status | Get MMS Status |
-| *Telstra_Messaging::MessagingApi* | [**retrieve_sms_responses**](docs/MessagingApi.md#retrieve_sms_responses) | **GET** /messages/sms | Retrieve SMS Responses |
-| *Telstra_Messaging::MessagingApi* | [**retrieve_mms_responses**](docs/MessagingApi.md#retrieve_mms_responses) | **GET** /messages/mms | Retrieve MMS Responses |
-| *Telstra_Messaging::ProvisioningApi* | [**create_subscription**](docs/ProvisioningApi.md#create_subscription) | **POST** /messages/provisioning/subscriptions | Create Subscription |
-| *Telstra_Messaging::ProvisioningApi* | [**get_subscription**](docs/ProvisioningApi.md#get_subscription) | **GET** /messages/provisioning/subscriptions | Get Subscription |
-| *Telstra_Messaging::ProvisioningApi* | [**delete_subscription**](docs/ProvisioningApi.md#delete_subscription) | **DELETE** /messages/provisioning/subscriptions | Delete Subscription |
+**`Telstra_Messaging::AuthenticationApi`**
+- `auth_token(client_id, client_secret, grant_type)` - Generate OAuth2 token
 
-### Models
+**`Telstra_Messaging::MessagingApi`**  
+- `send_sms(sms_request)` - Send SMS messages
+- `send_mms(mms_request)` - Send MMS messages  
+- `get_sms_status(message_id)` - Check SMS delivery status
+- `get_mms_status(message_id)` - Check MMS delivery status
 
-- [Telstra_Messaging::SendSMSRequest](docs/SendSMSRequest.md)
-- [Telstra_Messaging::SendMmsRequest](docs/SendMmsRequest.md)
-- [Telstra_Messaging::MMSContent](docs/MMSContent.md)
-- [Telstra_Messaging::MessageSentResponse](docs/MessageSentResponse.md)
-- [Telstra_Messaging::InboundPollResponse](docs/InboundPollResponse.md)
-- [Telstra_Messaging::OutboundPollResponse](docs/OutboundPollResponse.md)
-- [Telstra_Messaging::ProvisionNumberRequest](docs/ProvisionNumberRequest.md)
-- [Telstra_Messaging::ProvisionNumberResponse](docs/ProvisionNumberResponse.md)
-- [Complete Model List](docs/)
+**`Telstra_Messaging::ProvisioningApi`**
+- `create_subscription(provision_request)` - Get a dedicated number
+- `get_subscription()` - Check your subscription details
+- `delete_subscription()` - Release your number
+
+### Key Models
+
+- `SendSMSRequest` - SMS message configuration
+- `SendMmsRequest` - MMS message with content
+- `MMSContent` - Media content for MMS  
+- `MessageSentResponse` - Result from sending messages
 
 ## Version Information
 
