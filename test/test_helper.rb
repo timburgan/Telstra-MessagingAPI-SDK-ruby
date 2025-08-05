@@ -18,7 +18,7 @@ require 'minitest/autorun'
 require 'minitest/pride'
 
 # Mock and stub support for testing
-class Minitest::Test
+class TestHelper < Minitest::Test
   def setup
     # Reset configuration before each test
     Telstra_Messaging.configure do |config|
@@ -43,5 +43,26 @@ class Minitest::Test
       config.verify_ssl = true
       config.verify_ssl_host = true
     end
+  end
+
+  # Helper methods for tests
+  def valid_phone_number
+    "+61412345678"
+  end
+
+  def valid_sms_body
+    "Test SMS message from Telstra Messaging API SDK"
+  end
+
+  def test_message_id
+    "test-message-id-123456"
+  end
+
+  def load_fixture(filename)
+    File.read(File.join(__dir__, 'fixtures', filename))
+  end
+
+  def load_json_fixture(filename)
+    JSON.parse(load_fixture(filename))
   end
 end

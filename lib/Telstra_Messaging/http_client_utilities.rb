@@ -64,6 +64,12 @@ module Telstra_Messaging
     # @return [String] the sanitized filename
     def sanitize_filename(filename) = filename.gsub(%r{.*[/\\]}, '')
 
+    def build_request_url(path)
+      # Add leading and trailing slashes to path
+      path = "/#{path}".gsub(%r{/+}, '/')
+      URI::DEFAULT_PARSER.escape(@config.base_url + path)
+    end
+
     private
 
     # Save response body into a file in (the defined) temporary folder, using the filename
@@ -100,12 +106,6 @@ module Telstra_Messaging
                             "will be deleted automatically with GC. It's also recommended to delete the temp file "\
                             "explicitly with `tempfile.delete`"
       end
-    end
-
-    def build_request_url(path)
-      # Add leading and trailing slashes to path
-      path = "/#{path}".gsub(%r{/+}, '/')
-      URI::DEFAULT_PARSER.escape(@config.base_url + path)
     end
 
     # Builds the HTTP request body
