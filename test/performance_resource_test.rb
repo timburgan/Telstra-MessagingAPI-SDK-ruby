@@ -194,7 +194,7 @@ class PerformanceResourceTest < TestHelper
       iterations.times do
         config = Telstra_Messaging::Configuration.new
         config.host = 'tapi.telstra.com'
-        config.base_path = '/v2'
+        config.base_path = '/v3'
         
         api_client = Telstra_Messaging::ApiClient.new(config)
         
@@ -260,7 +260,7 @@ class PerformanceResourceTest < TestHelper
     # Test that configuration objects can be reused efficiently
     config = Telstra_Messaging::Configuration.new
     config.host = 'tapi.telstra.com'
-    config.base_path = '/v2'
+    config.base_path = '/v3'
     
     iterations = 100
     
@@ -272,7 +272,7 @@ class PerformanceResourceTest < TestHelper
         
         # Verify configuration is preserved
         assert_equal 'tapi.telstra.com', api_client.config.host
-        assert_equal '/v2', api_client.config.base_path
+        assert_equal '/v3', api_client.config.base_path
       end
     end
     

@@ -228,7 +228,7 @@ For more detailed information, see the [Developer Guide](DEVELOPER_GUIDE.md).
 
 ## API Reference
 
-All URIs are relative to *https://tapi.telstra.com/v2*
+All URIs are relative to *https://tapi.telstra.com/v3*
 
 | Class | Method | HTTP request | Description |
 |-------|--------|--------------|-------------|

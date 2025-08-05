@@ -19,7 +19,7 @@ class ConfigurationTest < Minitest::Test
       # Reset configuration before each test
       # uncomment below to setup host and base_path
       # require 'URI'
-      # uri = URI.parse("https://tapi.telstra.com/v2")
+      # uri = URI.parse("https://tapi.telstra.com/v3")
       # Telstra_Messaging.configure do |c|
       #   c.host = uri.host
       #   c.base_path = uri.path
@@ -29,14 +29,14 @@ class ConfigurationTest < Minitest::Test
     describe '#base_url' do
       it 'should have the default value' do
         # uncomment below to test default value of the base path
-        # assert_equal "https://tapi.telstra.com/v2", @config.base_url
+        # assert_equal "https://tapi.telstra.com/v3", @config.base_url
       end
 
       it 'should remove trailing slashes' do
         [nil, '', '/', '//'].each do |base_path|
           @config.base_path = base_path
           # uncomment below to test trailing slashes
-          # assert_equal "https://tapi.telstra.com/v2", @config.base_url
+          # assert_equal "https://tapi.telstra.com/v3", @config.base_url
         end
       end
     end

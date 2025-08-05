@@ -1,6 +1,6 @@
 # Telstra_Messaging::ProvisioningApi
 
-All URIs are relative to *https://tapi.telstra.com/v2*
+All URIs are relative to *https://tapi.telstra.com/v3*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------

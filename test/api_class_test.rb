@@ -98,7 +98,7 @@ class ApiClassTest < TestHelper
   def test_api_client_can_build_request_url
     config = Telstra_Messaging::Configuration.new
     config.host = 'tapi.telstra.com'
-    config.base_path = '/v2'
+    config.base_path = '/v3'
     
     api_client = Telstra_Messaging::ApiClient.new(config)
     
@@ -107,7 +107,7 @@ class ApiClassTest < TestHelper
     
     # Build a test URL
     url = api_client.build_request_url('/oauth/token')
-    expected_url = 'https://tapi.telstra.com/v2/oauth/token'
+    expected_url = 'https://tapi.telstra.com/v3/oauth/token'
     
     assert_equal expected_url, url
   end
@@ -115,7 +115,7 @@ class ApiClassTest < TestHelper
   def test_api_client_handles_query_parameters
     config = Telstra_Messaging::Configuration.new
     config.host = 'tapi.telstra.com'
-    config.base_path = '/v2'
+    config.base_path = '/v3'
     
     api_client = Telstra_Messaging::ApiClient.new(config)
     
@@ -123,7 +123,7 @@ class ApiClassTest < TestHelper
     url = api_client.build_request_url('/oauth/token')
     
     # URL should contain the base structure
-    assert_includes url, 'https://tapi.telstra.com/v2/oauth/token'
+    assert_includes url, 'https://tapi.telstra.com/v3/oauth/token'
   end
 
   def test_configuration_supports_various_schemes

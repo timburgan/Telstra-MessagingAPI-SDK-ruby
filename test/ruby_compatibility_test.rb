@@ -36,7 +36,7 @@ class RubyCompatibilityTest < TestHelper
     # This should work in both Ruby 2.x and 3.x
     begin
       config.host = 'api.example.com'
-      config.base_path = '/v2'
+      config.base_path = '/v3'
       api_client = Telstra_Messaging::ApiClient.new(config)
       assert_instance_of Telstra_Messaging::ApiClient, api_client
     rescue => e

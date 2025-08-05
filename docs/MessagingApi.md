@@ -1,6 +1,6 @@
 # Telstra_Messaging::MessagingApi
 
-All URIs are relative to *https://tapi.telstra.com/v2*
+All URIs are relative to *https://tapi.telstra.com/v3*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
@@ -30,7 +30,7 @@ Telstra_Messaging.configure do |config|
 end
 
 api_instance = Telstra_Messaging::MessagingApi.new
-messageid = 'messageid_example' # String | Unique identifier of a message - it is the value returned from a previous POST call to https://api.telstra.com/v2/messages/mms 
+messageid = 'messageid_example' # String | Unique identifier of a message - it is the value returned from a previous POST call to https://api.telstra.com/v3/messages/mms 
 
 begin
   #Get MMS Status
@@ -45,7 +45,7 @@ end
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **messageid** | **String**| Unique identifier of a message - it is the value returned from a previous POST call to https://api.telstra.com/v2/messages/mms  | 
+ **messageid** | **String**| Unique identifier of a message - it is the value returned from a previous POST call to https://api.telstra.com/v3/messages/mms  | 
 
 ### Return type
 
@@ -80,7 +80,7 @@ Telstra_Messaging.configure do |config|
 end
 
 api_instance = Telstra_Messaging::MessagingApi.new
-message_id = 'message_id_example' # String | Unique identifier of a message - it is the value returned from a previous POST call to https://api.telstra.com/v2/messages/sms. 
+message_id = 'message_id_example' # String | Unique identifier of a message - it is the value returned from a previous POST call to https://api.telstra.com/v3/messages/sms. 
 
 begin
   #Get SMS Status
@@ -95,7 +95,7 @@ end
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **message_id** | **String**| Unique identifier of a message - it is the value returned from a previous POST call to https://api.telstra.com/v2/messages/sms.  | 
+ **message_id** | **String**| Unique identifier of a message - it is the value returned from a previous POST call to https://api.telstra.com/v3/messages/sms.  | 
 
 ### Return type
 
