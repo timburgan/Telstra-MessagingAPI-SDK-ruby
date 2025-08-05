@@ -1,10 +1,19 @@
 require "bundler/gem_tasks"
+require 'rake/testtask'
+
+Rake::TestTask.new(:test) do |t|
+  t.libs << "test"
+  t.test_files = FileList['test/**/*_test.rb']
+  t.verbose = true
+end
 
 begin
-  require 'rspec/core/rake_task'
-
-  RSpec::Core::RakeTask.new(:spec)
-  task default: :spec
+  require 'rubocop/rake_task'
+  RuboCop::RakeTask.new(:rubocop) do |t|
+    t.options = ['--autocorrect']
+  end
 rescue LoadError
-  # no rspec available
+  # no rubocop available
 end
+
+task default: [:test]

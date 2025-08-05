@@ -1,0 +1,60 @@
+name: CI
+
+on:
+  push:
+    branches: [ master, main ]
+  pull_request:
+    branches: [ master, main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        ruby-version: ['2.7', '3.0', '3.1', '3.2', '3.3']
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Ruby ${{ matrix.ruby-version }}
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: ${{ matrix.ruby-version }}
+        bundler-cache: true
+    
+    - name: Install dependencies
+      run: |
+        bundle install
+    
+    - name: Run RuboCop
+      run: |
+        bundle exec rubocop --format github
+    
+    - name: Run Minitest tests
+      run: |
+        for test_file in test/**/*_test.rb; do
+          if [ -f "$test_file" ]; then
+            bundle exec ruby -Itest "$test_file"
+          fi
+        done
+
+  lint:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: '3.2'
+        bundler-cache: true
+    
+    - name: Install dependencies
+      run: |
+        bundle install
+    
+    - name: Run RuboCop
+      run: |
+        bundle exec rubocop --format github
