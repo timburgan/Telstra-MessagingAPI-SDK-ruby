@@ -3,7 +3,8 @@
 > **⚠️ Important Notice**
 > 
 > - **Ruby 3.3+ Required** - This gem requires Ruby version 3.3 or higher
-> - **Unofficial Gem** - This is an unofficial gem, forked from the now unsupported official gem that was at github.com/telstra/MessagingAPI-SDK-ruby but removed in July 2025
+> - **Unofficial Gem** - This is an unofficial gem, forked from the now unsupported official gem that was at github.com/telstra/MessagingAPI-SDK-ruby but removed somewhere in July 2025.
+>     - The functionailiy here is unchanged, though I've removed support for Ruby 3.2 and below, and added a docs/ folder, including sequence diagrams and examples, and just improved documentation for usage overall.
 
 An unofficial Ruby gem for integrating with the Telstra Messaging API. Send and receive SMS and MMS messages globally using Telstra's enterprise-grade messaging platform.
 
