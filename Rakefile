@@ -1,19 +1,16 @@
 require "bundler/gem_tasks"
 require 'rake/testtask'
 
-Rake::TestTask.new(:test) do |t|
-  t.libs << "test"
-  t.test_files = FileList['test/**/*_test.rb']
-  t.verbose = true
-end
-
 begin
-  require 'rubocop/rake_task'
-  RuboCop::RakeTask.new(:rubocop) do |t|
-    t.options = ['--autocorrect']
+  require 'minitest/test_task'
+
+  Minitest::TestTask.create(:test) do |t|
+    t.test_globs = ["test/**/*_test.rb"]
   end
+  
+  task default: :test
 rescue LoadError
-  # no rubocop available
+  # no minitest available
 end
 
 task default: [:test]

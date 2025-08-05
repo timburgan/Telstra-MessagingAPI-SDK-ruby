@@ -149,7 +149,7 @@ module Telstra_Messaging
     end
 
     # Calculates hash code according to all attributes.
-    # @return [Fixnum] Hash code
+    # @return [Integer] Hash code
     def hash
       [from, to, subject, reply_request, notify_url, mms_content].hash
     end

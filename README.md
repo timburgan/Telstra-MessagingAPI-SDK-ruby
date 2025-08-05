@@ -48,6 +48,10 @@ puts "Message sent! ID: #{result.message_id}"
 - **[Message Flows](MESSAGE_FLOWS.md)** - Visual sequence diagrams showing API interaction patterns
 - **[API Reference](docs/)** - Detailed API documentation for all classes and methods
 
+## Requirements
+
+- **Ruby 3.3+** - This gem requires Ruby version 3.3 or higher
+
 ## Installation
 
 ### From RubyGems

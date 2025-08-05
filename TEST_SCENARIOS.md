@@ -107,10 +107,10 @@ These tests verify the SDK handles various error conditions gracefully.
 
 ## 4. Ruby Version Compatibility Tests
 
-These tests ensure compatibility across Ruby versions, especially for the planned Ruby 3.3+ support.
+These tests ensure compatibility across Ruby versions. The SDK now requires Ruby 3.3+ as the minimum version.
 
 ### 4.1 Ruby 3.3+ Compatibility
-- **Purpose**: Verify SDK works with Ruby 3.3 and newer features
+- **Purpose**: Verify SDK works with Ruby 3.3 and newer features (required minimum version)
 - **Test**: Run core SDK functionality on Ruby 3.3+
 - **Assertions**:
   - All core functionality works

@@ -37,7 +37,7 @@ module Telstra_Messaging
     # @param client_secret 
     # @param grant_type 
     # @param [Hash] opts the optional parameters
-    # @return [Array<(OAuthResponse, Fixnum, Hash)>] OAuthResponse data, response status code and response headers
+    # @return [Array<(OAuthResponse, Integer, Hash)>] OAuthResponse data, response status code and response headers
     def auth_token_with_http_info(client_id, client_secret, grant_type, opts = {})
       if @api_client.config.debugging
         @api_client.config.logger.debug 'Calling API: AuthenticationApi.auth_token ...'

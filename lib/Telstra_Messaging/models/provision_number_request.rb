@@ -82,7 +82,7 @@ module Telstra_Messaging
     end
 
     # Calculates hash code according to all attributes.
-    # @return [Fixnum] Hash code
+    # @return [Integer] Hash code
     def hash
       [active_days, notify_url].hash
     end
