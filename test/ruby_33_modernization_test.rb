@@ -17,8 +17,8 @@ class Ruby33ModernizationTest < Minitest::Test
       gemspec_path = File.expand_path('../Telstra_Messaging.gemspec', __dir__)
       gemspec_content = File.read(gemspec_path)
       
-      assert_match /required_ruby_version.*>=.*3\.3/, gemspec_content,
-                   'Gemspec should require Ruby 3.3 or higher'
+      assert_match(/required_ruby_version.*>=.*3\.3/, gemspec_content,
+                   'Gemspec should require Ruby 3.3 or higher')
     end
 
     it 'uses current Ruby version that meets requirements' do
@@ -39,10 +39,10 @@ class Ruby33ModernizationTest < Minitest::Test
       gemspec_path = File.expand_path('../Telstra_Messaging.gemspec', __dir__)
       gemspec_content = File.read(gemspec_path)
       
-      assert_match /minitest/, gemspec_content,
-                   'Should use Minitest as test framework'
-      refute_match /rspec/, gemspec_content,
-                   'Should not use RSpec dependencies'
+      assert_match(/minitest/, gemspec_content,
+                   'Should use Minitest as test framework')
+      refute_match(/rspec/, gemspec_content,
+                   'Should not use RSpec dependencies')
     end
 
     it 'uses modern dependency versions' do
@@ -50,9 +50,9 @@ class Ruby33ModernizationTest < Minitest::Test
       gemspec_content = File.read(gemspec_path)
       
       # Check for modern dependency versions
-      assert_match /typhoeus.*~>.*1\.4/, gemspec_content
-      assert_match /json.*~>.*2\.7/, gemspec_content
-      assert_match /minitest.*~>.*5\.25/, gemspec_content
+      assert_match(/typhoeus.*~>.*1\.4/, gemspec_content)
+      assert_match(/json.*~>.*2\.7/, gemspec_content)
+      assert_match(/minitest.*~>.*5\.25/, gemspec_content)
     end
   end
 
@@ -69,8 +69,8 @@ class Ruby33ModernizationTest < Minitest::Test
         full_path = File.expand_path("../#{file_path}", __dir__)
         if File.exist?(full_path)
           content = File.read(full_path)
-          assert_match /# frozen_string_literal: true/, content,
-                       "#{file_path} should have frozen string literal pragma"
+          assert_match(/# frozen_string_literal: true/, content,
+                       "#{file_path} should have frozen string literal pragma")
         end
       end
     end
@@ -82,13 +82,13 @@ class Ruby33ModernizationTest < Minitest::Test
       
       api_files.each do |file_path|
         content = File.read(file_path)
-        refute_match /Fixnum/, content,
-                     "#{File.basename(file_path)} should not contain deprecated Fixnum references"
+        refute_match(/Fixnum/, content,
+                     "#{File.basename(file_path)} should not contain deprecated Fixnum references")
         
         # Should contain Integer for return types
         if content.match?(/@return.*Array.*Integer/)
-          assert_match /@return.*Array.*Integer/, content,
-                       "#{File.basename(file_path)} should use Integer type in documentation"
+          assert_match(/@return.*Array.*Integer/, content,
+                       "#{File.basename(file_path)} should use Integer type in documentation")
         end
       end
     end
@@ -99,16 +99,16 @@ class Ruby33ModernizationTest < Minitest::Test
       gemspec_path = File.expand_path('../Telstra_Messaging.gemspec', __dir__)
       gemspec_content = File.read(gemspec_path)
       
-      assert_match /__dir__/, gemspec_content,
-                   'Gemspec should use __dir__ instead of __FILE__'
+      assert_match(/__dir__/, gemspec_content,
+                   'Gemspec should use __dir__ instead of __FILE__')
     end
 
     it 'uses spec instead of s for cleaner declarations' do
       gemspec_path = File.expand_path('../Telstra_Messaging.gemspec', __dir__)
       gemspec_content = File.read(gemspec_path)
       
-      assert_match /spec\.add_runtime_dependency/, gemspec_content,
-                   'Should use spec instead of s for dependency declarations'
+      assert_match(/spec\.add_runtime_dependency/, gemspec_content,
+                   'Should use spec instead of s for dependency declarations')
     end
   end
 
@@ -119,16 +119,16 @@ class Ruby33ModernizationTest < Minitest::Test
              'HttpClientUtilities module file should exist'
       
       content = File.read(utilities_path)
-      assert_match /module HttpClientUtilities/, content,
-                   'Should define HttpClientUtilities module'
+      assert_match(/module HttpClientUtilities/, content,
+                   'Should define HttpClientUtilities module')
     end
 
     it 'ApiClient includes HttpClientUtilities' do
       api_client_path = File.expand_path('../lib/Telstra_Messaging/api_client.rb', __dir__)
       content = File.read(api_client_path)
       
-      assert_match /include HttpClientUtilities/, content,
-                   'ApiClient should include HttpClientUtilities module'
+      assert_match(/include HttpClientUtilities/, content,
+                   'ApiClient should include HttpClientUtilities module')
     end
 
     it 'ApiClient is significantly reduced in size' do
