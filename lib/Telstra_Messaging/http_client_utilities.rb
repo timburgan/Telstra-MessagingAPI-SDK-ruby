@@ -72,68 +72,68 @@ module Telstra_Messaging
 
     private
 
-    # Save response body into a file in (the defined) temporary folder, using the filename
-    # from the "Content-Disposition" header if provided, otherwise a random filename.
-    # The response body is written to the file in chunks in order to handle files which
-    # size is larger than maximum Ruby String or even larger than the maximum memory a Ruby
-    # process can use.
-    #
-    # @see Configuration#temp_folder_path
-    def download_file(request)
-      tempfile = nil
-      encoding = nil
-      request.on_headers do |response|
-        content_disposition = response.headers['Content-Disposition']
-        if content_disposition && content_disposition =~ /filename=/i
-          filename = content_disposition[/filename=['"]?([^'"\s]+)['"]?/, 1]
-          prefix = sanitize_filename(filename)
-        else
-          prefix = 'download-'
-        end
-        prefix = prefix + '-' unless prefix.end_with?('-')
-        encoding = response.body.encoding
-        tempfile = Tempfile.open(prefix, @config.temp_folder_path, encoding: encoding)
-        @tempfile = tempfile
-      end
-      request.on_body do |chunk|
-        chunk.force_encoding(encoding)
-        tempfile.write(chunk)
-      end
-      request.on_complete do |response|
-        tempfile.close if tempfile
-        @config.logger.info "Temp file written to #{tempfile.path}, please copy the file to a proper folder "\
-                            "with e.g. `FileUtils.cp(tempfile.path, '/new/file/path')` otherwise the temp file "\
-                            "will be deleted automatically with GC. It's also recommended to delete the temp file "\
-                            "explicitly with `tempfile.delete`"
-      end
-    end
-
-    # Builds the HTTP request body
-    #
-    # @param [Hash] header_params Header parameters
-    # @param [Hash] form_params Query parameters
-    # @param [Object] body HTTP body (JSON/XML)
-    # @return [String] HTTP body data in the form of string
-    def build_request_body(header_params, form_params, body)
-      # http form
-      if header_params['Content-Type'] == 'application/x-www-form-urlencoded' ||
-         header_params['Content-Type'] == 'multipart/form-data'
-        data = {}
-        form_params.each do |key, value|
-          case value
-          when ::File, ::Array, nil
-            # let typhoeus handle File, Array and nil parameters
-            data[key] = value
+      # Save response body into a file in (the defined) temporary folder, using the filename
+      # from the "Content-Disposition" header if provided, otherwise a random filename.
+      # The response body is written to the file in chunks in order to handle files which
+      # size is larger than maximum Ruby String or even larger than the maximum memory a Ruby
+      # process can use.
+      #
+      # @see Configuration#temp_folder_path
+      def download_file(request)
+        tempfile = nil
+        encoding = nil
+        request.on_headers do |response|
+          content_disposition = response.headers['Content-Disposition']
+          if content_disposition && content_disposition =~ /filename=/i
+            filename = content_disposition[/filename=['"]?([^'"\s]+)['"]?/, 1]
+            prefix = sanitize_filename(filename)
           else
-            data[key] = value.to_s
+            prefix = 'download-'
           end
+          prefix = prefix + '-' unless prefix.end_with?('-')
+          encoding = response.body.encoding
+          tempfile = Tempfile.open(prefix, @config.temp_folder_path, encoding: encoding)
+          @tempfile = tempfile
         end
-      elsif body
-        data = body.is_a?(String) ? body : body.to_json
-      else
-        data = nil
+        request.on_body do |chunk|
+          chunk.force_encoding(encoding)
+          tempfile.write(chunk)
+        end
+        request.on_complete do |response|
+          tempfile.close if tempfile
+          @config.logger.info "Temp file written to #{tempfile.path}, please copy the file to a proper folder "\
+                              "with e.g. `FileUtils.cp(tempfile.path, '/new/file/path')` otherwise the temp file "\
+                              "will be deleted automatically with GC. It's also recommended to delete the temp file "\
+                              "explicitly with `tempfile.delete`"
+        end
       end
-      data
-    end
+
+      # Builds the HTTP request body
+      #
+      # @param [Hash] header_params Header parameters
+      # @param [Hash] form_params Query parameters
+      # @param [Object] body HTTP body (JSON/XML)
+      # @return [String] HTTP body data in the form of string
+      def build_request_body(header_params, form_params, body)
+        # http form
+        if header_params['Content-Type'] == 'application/x-www-form-urlencoded' ||
+           header_params['Content-Type'] == 'multipart/form-data'
+          data = {}
+          form_params.each do |key, value|
+            case value
+            when ::File, ::Array, nil
+              # let typhoeus handle File, Array and nil parameters
+              data[key] = value
+            else
+              data[key] = value.to_s
+            end
+          end
+        elsif body
+          data = body.is_a?(String) ? body : body.to_json
+        else
+          data = nil
+        end
+        data
+      end
   end
 end
