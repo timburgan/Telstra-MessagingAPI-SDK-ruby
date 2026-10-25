@@ -31,7 +31,7 @@ Gem::Specification.new do |spec|
 
   # Runtime dependencies - modernized versions for Ruby 3.3+
   spec.add_runtime_dependency "typhoeus", "~> 1.4"
-  spec.add_runtime_dependency "json", "~> 2.7"
+  spec.add_runtime_dependency "json", ">= 2.7", "< 4"
 
   # Development dependencies - current versions for Ruby 3.3+
   spec.add_development_dependency "minitest", "~> 5.25"
